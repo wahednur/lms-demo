@@ -1,0 +1,11 @@
+export { studentService } from "./student-service";
+export { staffService } from "./staff-service";
+export { academicService } from "./academic-service";
+export { attendanceService } from "./attendance-service";
+export { examService } from "./exam-service";
+export { routineService } from "./routine-service";
+export { noticeService, resourceService, futureFeatureService } from "./content-service";
+export { sessionService } from "./session-service";
+export { userService } from "./user-service";
+export { auditService } from "./audit-service";
+export { reportService } from "./report-service";

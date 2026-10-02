@@ -1,0 +1,54 @@
+{
+  "results": [
+    {
+      "label": "home renders institute name (bn default)",
+      "pass": true
+    },
+    {
+      "label": "departments list shows 4 departments",
+      "pass": true
+    },
+    {
+      "label": "login shows 5 role cards",
+      "pass": true
+    },
+    {
+      "label": "principal lands on /admin with data loaded",
+      "pass": true
+    },
+    {
+      "label": "student total count grew by 1 after adding",
+      "pass": true
+    },
+    {
+      "label": "duplicate roll shows a rejection toast",
+      "pass": true
+    },
+    {
+      "label": "teacher lands on /portal/teacher",
+      "pass": true
+    },
+    {
+      "label": "attendance save button enabled after marking all present",
+      "pass": true
+    },
+    {
+      "label": "submit-for-verification enabled once all cells filled",
+      "pass": true
+    },
+    {
+      "label": "a publish button is present on results page",
+      "pass": true
+    },
+    {
+      "label": "export CSV button present",
+      "pass": true
+    }
+  ],
+  "passCount": 11,
+  "totalChecks": 11,
+  "consoleErrorCount": 0,
+  "pageErrorCount": 0,
+  "consoleErrors": [],
+  "pageErrors": []
+}
