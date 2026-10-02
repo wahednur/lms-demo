@@ -82,3 +82,18 @@ Server→Client prop constraints).
 
 If you're picking this project back up, read `PROGRESS.md` first — it's the resumable source
 of truth for what's done, what's left, and why specific choices were made.
+
+## Developer / Contact
+
+Built by **Wahed Nur** — web developer working primarily with Next.js/React/TypeScript.
+
+- Website: [wahednur.tech](https://www.wahednur.tech/)
+- Email: wahednur@gmail.com
+
+**Recent work:** [ekhaneikini.com](https://ekhaneikini.com/) — a bilingual (Bengali/English)
+e-commerce marketplace for Bangladesh ("Bangladesh's online superstore, est. 2016"), built on
+Next.js with SSLCommerz payment integration, a 24+ category product catalog, user accounts with
+wishlists/order tracking, and an accompanying Android app. This EMIS prototype is a current,
+separate project.
+
+Open to freelance/contract work — reach out via the website or email above.
