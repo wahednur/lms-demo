@@ -33,6 +33,9 @@ h1,h2,h3{font-family:var(--font-head); text-wrap:balance; letter-spacing:.01em;}
 /* Title block */
 .titleblock{border:2px solid var(--ink); border-radius:2px; padding:22px 24px; background:var(--paper-raised);
   display:grid; grid-template-columns:1fr auto; gap:10px 24px;}
+.orgrow{grid-column:1/-1; display:flex; align-items:center; gap:10px; margin-top:10px;}
+.orgbadge{width:34px; height:34px; border-radius:50%; border:2px solid var(--ink); display:flex; align-items:center; justify-content:center; font-family:var(--font-head); font-size:.72rem; letter-spacing:.02em; flex:none;}
+.orgname{font-family:var(--font-head); font-size:.95rem; letter-spacing:.02em;}
 .titleblock .doctype{grid-column:1/-1; font-family:var(--font-head); font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); border-bottom:1px solid var(--line); padding-bottom:10px;}
 .titleblock h1{grid-column:1/-1; font-size:1.7rem; margin:4px 0 2px;}
 .titleblock .sub{grid-column:1/-1; color:var(--ink-soft); font-size:.95rem; margin-bottom:6px;}
@@ -182,6 +185,7 @@ footer.sign{margin-top:60px; border-top:2px solid var(--ink); padding-top:18px; 
 
   <div class="titleblock">
     <div class="doctype">Scope of Work &amp; Cost Estimate · ব্লুপ্রিন্ট লেজার</div>
+    <div class="orgrow"><span class="orgbadge">SPI</span><span class="orgname">Sherpur Polytechnic Institute</span></div>
     <h1>EMIS — Education Management Information System</h1>
     <div class="sub">পলিটেকনিক ইনস্টিটিউট ম্যানেজমেন্ট সিস্টেম — Admin, Student, Teacher, Guardian ও Alumni প্যানেল সহ সম্পূর্ণ প্ল্যাটফর্ম</div>
     <div class="meta"><b>প্রস্তুতকারক</b> Abdul Wahed Nur</div>
