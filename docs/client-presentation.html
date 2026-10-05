@@ -1,0 +1,563 @@
+<title>EMIS প্রজেক্ট — স্কোপ অফ ওয়ার্ক ও খরচের হিসাব</title>
+<style>
+:root{
+  --paper:#E7EEF2; --paper-raised:#F4F9FB; --ink:#163C52; --ink-soft:#4C7488;
+  --line:#BDD0D8; --amber:#B06A1F; --red:#A8392F; --green:#2F7A52;
+  --amber-bg:#F3E4CD; --red-bg:#F3DAD6; --green-bg:#D9ECE1;
+  --font-head:"Bahnschrift","Arial Narrow",system-ui,sans-serif;
+  --font-body:"Nirmala UI","Noto Sans Bengali","Segoe UI","Vrinda",system-ui,sans-serif;
+  --font-mono:"Consolas","SF Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --paper:#0E2E40; --paper-raised:#123850; --ink:#DCEEF5; --ink-soft:#8FB8CB;
+    --line:#2A5068; --amber:#E3A857; --red:#E79088; --green:#7FCBA4;
+    --amber-bg:#3A2D16; --red-bg:#3A1E1C; --green-bg:#163327; }
+}
+:root[data-theme="dark"]{ --paper:#0E2E40; --paper-raised:#123850; --ink:#DCEEF5; --ink-soft:#8FB8CB;
+  --line:#2A5068; --amber:#E3A857; --red:#E79088; --green:#7FCBA4;
+  --amber-bg:#3A2D16; --red-bg:#3A1E1C; --green-bg:#163327; }
+:root[data-theme="light"]{ --paper:#E7EEF2; --paper-raised:#F4F9FB; --ink:#163C52; --ink-soft:#4C7488;
+  --line:#BDD0D8; --amber:#B06A1F; --red:#A8392F; --green:#2F7A52;
+  --amber-bg:#F3E4CD; --red-bg:#F3DAD6; --green-bg:#D9ECE1; }
+
+*{box-sizing:border-box}
+body{margin:0;background:
+  linear-gradient(var(--paper),var(--paper)),
+  repeating-linear-gradient(0deg, color-mix(in srgb, var(--ink) 6%, transparent) 0 1px, transparent 1px 28px),
+  repeating-linear-gradient(90deg, color-mix(in srgb, var(--ink) 6%, transparent) 0 1px, transparent 1px 28px);
+  color:var(--ink); font-family:var(--font-body); line-height:1.65; font-size:16px;}
+.wrap{max-width:980px; margin:0 auto; padding:28px 20px 80px;}
+h1,h2,h3{font-family:var(--font-head); text-wrap:balance; letter-spacing:.01em;}
+.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+/* Title block */
+.titleblock{border:2px solid var(--ink); border-radius:2px; padding:22px 24px; background:var(--paper-raised);
+  display:grid; grid-template-columns:1fr auto; gap:10px 24px;}
+.titleblock .doctype{grid-column:1/-1; font-family:var(--font-head); font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); border-bottom:1px solid var(--line); padding-bottom:10px;}
+.titleblock h1{grid-column:1/-1; font-size:1.7rem; margin:4px 0 2px;}
+.titleblock .sub{grid-column:1/-1; color:var(--ink-soft); font-size:.95rem; margin-bottom:6px;}
+.meta{display:flex; flex-direction:column; gap:3px; font-size:.85rem;}
+.meta b{font-family:var(--font-head); letter-spacing:.04em;}
+.stamp{justify-self:end; align-self:start; border:2px solid var(--red); color:var(--red); font-family:var(--font-head);
+  text-transform:uppercase; letter-spacing:.1em; font-size:.72rem; padding:6px 10px; border-radius:3px; transform:rotate(-4deg); white-space:nowrap;}
+
+section{margin-top:52px;}
+.eyebrow{font-family:var(--font-head); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 6px;}
+h2.title{font-size:1.35rem; margin:0 0 16px; border-left:4px solid var(--amber); padding-left:12px;}
+p.lead{max-width:66ch; color:var(--ink-soft); font-size:1rem;}
+
+/* Iceberg */
+.iceberg{position:relative; border:1px solid var(--line); border-radius:4px; background:var(--paper-raised); padding:0; overflow:hidden; margin:22px 0;}
+.ice-surface{position:relative; height:230px; overflow:hidden; padding-top:34px;}
+.waterline{position:absolute; left:0; right:0; top:40%; height:2px; background:var(--amber); z-index:2;}
+.waterline::after{content:"জলরেখা · যা ক্লায়েন্ট দেখেন"; position:absolute; right:10px; top:-22px; width:220px; text-align:right; font-size:.72rem; color:var(--amber); font-family:var(--font-head); letter-spacing:.05em;}
+.visible-box{position:absolute; z-index:3; left:50%; top:14px; transform:translateX(-50%); width:min(70%,320px); text-align:center;
+  background:var(--green-bg); border:1px solid var(--green); color:var(--green); border-radius:3px; padding:10px 14px; font-size:.86rem;}
+.ice-tri{position:absolute; z-index:1; left:50%; top:40%; transform:translateX(-50%); width:min(62%,300px); height:60%;
+  background:color-mix(in srgb, var(--ink) 16%, var(--paper-raised)); clip-path:polygon(0 0, 100% 0, 52% 100%, 48% 100%);}
+.hidden-labels{display:grid; grid-template-columns:repeat(2,1fr); gap:8px 14px; padding:18px 24px 26px; font-size:.82rem;}
+.hidden-labels div{display:flex; align-items:center; gap:8px; color:var(--ink-soft);}
+.hidden-labels div::before{content:""; width:7px; height:7px; background:var(--red); border-radius:50%; flex:none;}
+
+/* Sheets (module cards) */
+.sheets{display:grid; gap:18px;}
+.sheet{border:1px solid var(--line); border-radius:4px; background:var(--paper-raised); overflow:hidden;}
+.sheet-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:14px 18px; border-bottom:1px dashed var(--line); flex-wrap:wrap;}
+.sheet-id{font-family:var(--font-mono); font-size:.78rem; color:var(--ink-soft); letter-spacing:.06em;}
+.sheet-head h3{margin:2px 0 0; font-size:1.08rem;}
+.badge{font-family:var(--font-head); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; padding:4px 9px; border-radius:20px; white-space:nowrap;}
+.b-done{background:var(--green-bg); color:var(--green);}
+.b-partial{background:var(--amber-bg); color:var(--amber);}
+.b-new{background:var(--red-bg); color:var(--red);}
+.sheet-body{padding:14px 18px 6px; display:grid; grid-template-columns:1.5fr 1fr; gap:18px;}
+.sheet-body ul{margin:0; padding-left:1.1em; font-size:.88rem; color:var(--ink-soft);}
+.sheet-body li{margin-bottom:4px;}
+.sheet-stats{display:flex; flex-direction:column; gap:8px; font-size:.84rem; border-left:1px solid var(--line); padding-left:16px;}
+.stat-row{display:flex; justify-content:space-between; gap:8px;}
+.stat-row .v{font-family:var(--font-mono); font-variant-numeric:tabular-nums; font-weight:600;}
+.risk-pill{justify-self:flex-start; font-size:.72rem; font-family:var(--font-head); letter-spacing:.06em; text-transform:uppercase; padding:2px 8px; border-radius:3px; width:fit-content;}
+.risk-low{background:var(--green-bg); color:var(--green);}
+.risk-mid{background:var(--amber-bg); color:var(--amber);}
+.risk-high{background:var(--red-bg); color:var(--red);}
+.sheet-foot{padding:10px 18px 14px; font-size:.78rem; color:var(--ink-soft); border-top:1px solid var(--line); margin-top:6px;}
+
+/* note box */
+.note{border:1px dashed var(--green); background:var(--green-bg); color:var(--green); border-radius:4px; padding:14px 18px; font-size:.88rem; margin-top:18px;}
+.note b{font-family:var(--font-head);}
+
+/* timeline */
+.tl{display:grid; gap:10px; margin-top:18px;}
+.tl-row{display:grid; grid-template-columns:150px 1fr 70px; align-items:center; gap:10px; font-size:.82rem;}
+.tl-row .lab{color:var(--ink-soft);}
+.tl-track{background:color-mix(in srgb, var(--ink) 8%, transparent); border-radius:3px; height:16px; position:relative;}
+.tl-bar{height:100%; border-radius:3px; background:var(--amber);}
+.tl-row .d{font-family:var(--font-mono); text-align:right; font-variant-numeric:tabular-nums;}
+
+/* totals table */
+table.ledger{width:100%; border-collapse:collapse; margin-top:16px; font-size:.86rem;}
+table.ledger th{text-align:left; font-family:var(--font-head); letter-spacing:.04em; text-transform:uppercase; font-size:.7rem; color:var(--ink-soft); border-bottom:2px solid var(--ink); padding:8px 10px;}
+table.ledger td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+table.ledger td.num, table.ledger th.num{font-family:var(--font-mono); font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap;}
+table.ledger tr.total td{border-top:2px solid var(--ink); border-bottom:none; font-weight:700; font-size:.95rem; padding-top:14px;}
+.overflow{overflow-x:auto;}
+
+/* risk register */
+table.risk{width:100%; border-collapse:collapse; font-size:.85rem; margin-top:14px;}
+table.risk th{text-align:left; font-family:var(--font-head); font-size:.7rem; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft); border-bottom:2px solid var(--ink); padding:8px 10px;}
+table.risk td{padding:10px; border-bottom:1px solid var(--line); color:var(--ink-soft);}
+table.risk td:first-child{color:var(--ink); font-weight:600;}
+
+/* milestones */
+.milestones{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px;}
+.ms{border:1px solid var(--line); background:var(--paper-raised); border-radius:4px; padding:14px 16px;}
+.ms .pct{font-family:var(--font-mono); font-size:1.6rem; color:var(--amber); font-variant-numeric:tabular-nums;}
+.ms h4{margin:4px 0 6px; font-size:.92rem;}
+.ms p{margin:0; font-size:.8rem; color:var(--ink-soft);}
+
+/* architecture stack */
+.stack{display:flex; flex-direction:column; align-items:stretch; gap:4px; margin-top:18px;}
+.stack-band{background:var(--paper-raised); border:1px solid var(--line); border-left:4px solid color-mix(in srgb, var(--ink) 35%, var(--line) calc(var(--i) * 15%)); border-radius:3px; padding:12px 16px; font-size:.9rem; display:flex; align-items:center; gap:10px;}
+.stack-band.accent{border-left-color:var(--amber); background:var(--amber-bg); color:var(--amber);}
+.band-tag{font-family:var(--font-mono); font-size:.72rem; color:var(--ink-soft); border:1px solid var(--line); border-radius:3px; padding:1px 6px;}
+.stack-band.accent .band-tag{color:var(--amber); border-color:var(--amber);}
+.arrow{text-align:center; color:var(--ink-soft); font-size:.9rem; line-height:1;}
+.security-wrap, .docker-wrap{position:relative; border:1px dashed var(--ink-soft); border-radius:6px; padding:16px 10px 10px; margin:2px 0;}
+.security-wrap{display:flex; flex-direction:column; gap:4px;}
+.security-label{position:absolute; top:-10px; left:14px; background:var(--paper); padding:0 8px; font-family:var(--font-head); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft);}
+
+.orgchart{display:flex; flex-direction:column; align-items:center; margin-top:34px;}
+.org-top{background:var(--paper-raised); border:2px solid var(--ink); border-radius:4px; padding:12px 22px; text-align:center; font-family:var(--font-head); letter-spacing:.03em; font-size:.95rem;}
+.org-top span{display:block; font-family:var(--font-body); font-size:.78rem; color:var(--ink-soft); margin-top:2px; letter-spacing:0;}
+.org-hline{width:78%; max-width:560px; height:1px; background:var(--line); margin:16px 0 0;}
+.org-children{display:flex; justify-content:space-between; width:78%; max-width:560px; gap:8px; margin-top:0;}
+.org-node{position:relative; flex:1; text-align:center; background:var(--paper-raised); border:1px solid var(--line); border-radius:3px; padding:9px 4px; font-size:.78rem;}
+.org-node::before{content:""; position:absolute; top:-16px; left:50%; width:1px; height:16px; background:var(--line);}
+
+/* competitive edge */
+.edge-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:16px;}
+.edge-card{border:1px solid var(--line); background:var(--paper-raised); border-radius:4px; padding:16px 18px;}
+.edge-icon{width:26px; height:26px; color:var(--green); margin-bottom:8px;}
+.edge-card h4{margin:0 0 6px; font-size:.95rem;}
+.edge-card p{margin:0; font-size:.83rem; color:var(--ink-soft);}
+
+footer.sign{margin-top:60px; border-top:2px solid var(--ink); padding-top:18px; display:flex; justify-content:space-between; gap:30px; font-size:.82rem; color:var(--ink-soft); flex-wrap:wrap;}
+.sign-line{width:220px; border-top:1px solid var(--ink-soft); padding-top:6px; margin-top:34px;}
+
+@media (max-width:720px){
+  .sheet-body{grid-template-columns:1fr;}
+  .sheet-stats{border-left:none; padding-left:0; border-top:1px dashed var(--line); padding-top:10px;}
+  .milestones{grid-template-columns:1fr;}
+  .tl-row{grid-template-columns:100px 1fr 60px;}
+  .hidden-labels{grid-template-columns:1fr;}
+  .edge-grid{grid-template-columns:1fr;}
+  .org-children{flex-wrap:wrap;}
+  .org-node{flex:1 1 40%;}
+}
+</style>
+
+<div class="wrap">
+
+  <div class="titleblock">
+    <div class="doctype">Scope of Work &amp; Cost Estimate · ব্লুপ্রিন্ট লেজার</div>
+    <h1>EMIS — Education Management Information System</h1>
+    <div class="sub">পলিটেকনিক ইনস্টিটিউট ম্যানেজমেন্ট সিস্টেম — Admin, Student, Teacher, Guardian ও Alumni প্যানেল সহ সম্পূর্ণ প্ল্যাটফর্ম</div>
+    <div class="meta"><b>প্রস্তুতকারক</b> Abdul Wahed Nur</div>
+    <div class="meta"><b>তারিখ</b> ০৫ অক্টোবর, ২০২৬</div>
+    <div class="stamp">Draft · Rev A</div>
+  </div>
+
+  <section>
+    <p class="eyebrow">কেন এটি একটি ১–২ দিনের কাজ নয়</p>
+    <h2 class="title">আপনি যা দেখছেন, সেটা পুরো প্রজেক্টের মাত্র একটি অংশ</h2>
+    <p class="lead">একটি EMIS-কে বরফখণ্ডের (আইসবার্গ) মতো ভাবুন। জলের উপরে যা দেখা যায় — স্ক্রিনে ক্লিক করে দেখা পেজ, বাটন, ডিজাইন — সেটা সহজে তৈরি মনে হয়। কিন্তু জলের নিচে যা আছে — ডেটাবেস, সিকিউরিটি, সার্ভার — সেটাই আসল কাজ এবং সময়ের বড় অংশ এখানে যায়।</p>
+
+    <div class="iceberg">
+      <div class="ice-surface">
+        <div class="visible-box">দৃশ্যমান · UI / স্ক্রিন / ডিজাইন<br><span style="font-size:.74rem">মোট কাজের ≈ ২০–২৫%</span></div>
+        <div class="waterline"></div>
+        <div class="ice-tri"></div>
+      </div>
+      <div class="hidden-labels">
+        <div>ডেটাবেস ডিজাইন ও নরমালাইজেশন</div>
+        <div>ব্যাকএন্ড API ও অথেনটিকেশন</div>
+        <div>রোল-বেসড সিকিউরিটি</div>
+        <div>Guardian / Alumni প্যানেল লজিক</div>
+        <div>Dokploy ডিপ্লয়মেন্ট (VPS)</div>
+        <div>টেস্টিং ও বাগ ফিক্সিং</div>
+      </div>
+    </div>
+
+    <div class="note"><b>বর্তমান অবস্থা —</b> Admin, Student ও Teacher প্যানেলের UI নমুনা (mock) ডেটায় তৈরি হয়ে গেছে। কিন্তু এর পেছনে কোনো রিয়েল ডেটাবেস, লগইন সিকিউরিটি বা সার্ভার এখনো যুক্ত হয়নি — সেটাই নিচের লেজারে ধাপে ধাপে দেখানো হয়েছে।</div>
+  </section>
+
+  <section>
+    <p class="eyebrow">টেকনিক্যাল ব্লুপ্রিন্ট</p>
+    <h2 class="title">সিস্টেম আর্কিটেকচার</h2>
+    <p class="lead">EMIS যে স্তরগুলো (layers) নিয়ে তৈরি হবে তার ডায়াগ্রাম — প্রতিটি স্তর আলাদা, কিন্তু একটির উপর আরেকটি নির্ভরশীল।</p>
+
+    <div class="stack">
+      <div class="stack-band" style="--i:0"><span class="band-tag">01</span>ব্রাউজার / মোবাইল ক্লায়েন্ট</div>
+      <div class="arrow">↓</div>
+      <div class="stack-band" style="--i:1"><span class="band-tag">02</span>ফ্রন্টএন্ড — Next.js, React, Tailwind (৫টি প্যানেল UI)</div>
+      <div class="arrow">↓</div>
+      <div class="security-wrap">
+        <span class="security-label">সিকিউরিটি স্তর — Auth · RBAC · Validation</span>
+        <div class="stack-band" style="--i:2"><span class="band-tag">03</span>ব্যাকএন্ড API — Auth, Role-based Access, Business Logic</div>
+        <div class="arrow">↓</div>
+        <div class="stack-band" style="--i:3"><span class="band-tag">04</span>ডেটাবেস — নরমালাইজড স্কিমা (Students, Staff, Trade, Exam, Routine…)</div>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="docker-wrap">
+        <span class="security-label">Docker Container</span>
+        <div class="stack-band accent" style="--i:4"><span class="band-tag">05</span>Dokploy — SSL, Reverse Proxy, Auto Deploy, VPS</div>
+      </div>
+    </div>
+
+    <p class="lead" style="margin-top:28px;">পাঁচটি প্যানেল একই EMIS কোর ডেটাবেস ও API শেয়ার করবে — প্রতিটির জন্য আলাদা সিস্টেম বানাতে হবে না, যা খরচ ও ভবিষ্যৎ মেইনটেনেন্স দুটোই কমায়।</p>
+
+    <div class="orgchart">
+      <div class="org-top">EMIS কোর<br><span>ডেটাবেস + API</span></div>
+      <div class="org-hline"></div>
+      <div class="org-children">
+        <div class="org-node">অ্যাডমিন</div>
+        <div class="org-node">টিচার</div>
+        <div class="org-node">স্টুডেন্ট</div>
+        <div class="org-node">গার্ডিয়ান</div>
+        <div class="org-node">অ্যালামনাই</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">প্রতিযোগিতামূলক সুবিধা</p>
+    <h2 class="title">কেন এই প্রস্তাবনাই বেছে নেবেন</h2>
+    <div class="edge-grid">
+      <div class="edge-card">
+        <svg class="edge-icon" viewBox="0 0 24 24" fill="none"><path d="M4 12.5 9 17.5 20 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h4>কথায় না, কাজে প্রমাণ</h4>
+        <p>Admin/Student/Teacher প্যানেলের UI এবং প্রোডাকশন-রেডি Docker সেটআপ ইতিমধ্যে চালু — অন্য প্রস্তাবনা এখনো শুধু কাগজে।</p>
+      </div>
+      <div class="edge-card">
+        <svg class="edge-icon" viewBox="0 0 24 24" fill="none"><path d="M4 12.5 9 17.5 20 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h4>Dokploy-রেডি ডিপ্লয়মেন্ট</h4>
+        <p>Dockerfile ও docker-compose আগে থেকেই লেখা — আপনার VPS-এ Dokploy দিয়ে কয়েক ক্লিকেই ডিপ্লয় করা যাবে, আলাদা করে সার্ভার-ইঞ্জিনিয়ার লাগবে না।</p>
+      </div>
+      <div class="edge-card">
+        <svg class="edge-icon" viewBox="0 0 24 24" fill="none"><path d="M4 12.5 9 17.5 20 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h4>DRY আর্কিটেকচার</h4>
+        <p>Reusable কম্পোনেন্ট ও Shared Service Layer মানে ভবিষ্যতে নতুন ফিচার যোগ করা সহজ ও কম খরচের — প্রতিবার নতুন করে লিখতে হবে না।</p>
+      </div>
+      <div class="edge-card">
+        <svg class="edge-icon" viewBox="0 0 24 24" fill="none"><path d="M4 12.5 9 17.5 20 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h4>লিখিত স্বচ্ছ হিসাব</h4>
+        <p>প্রতিটি মডিউলের সময়-খরচ আলাদা শিটে স্পষ্ট লেখা — কোনো লুকানো খরচ বা অস্পষ্ট প্রতিশ্রুতি নেই।</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">মডিউল-ভিত্তিক লেজার</p>
+    <h2 class="title">কাজের শিট — মডিউল অনুযায়ী সময় ও খরচ</h2>
+    <p class="lead">প্রতিটি শিট একটি নির্দিষ্ট মডিউলের কাজ, সময় এবং খরচ আলাদাভাবে দেখায় — ঠিক যেমন একটি কনস্ট্রাকশন এস্টিমেটে প্রতিটি কাজ লাইন বাই লাইন দেখানো হয়।</p>
+
+    <div class="sheets">
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 01</div><h3>UI/UX ডিজাইন ও ফ্রন্টএন্ড স্ট্রাকচার</h3></div>
+          <span class="badge b-partial">আংশিক সম্পন্ন</span>
+        </div>
+        <div class="sheet-body">
+          <ul>
+            <li>পুরো সিস্টেমের লেআউট, কম্পোনেন্ট লাইব্রেরি, থিম তৈরি করা হয়েছে</li>
+            <li>Public সাইট (About, Contact, Departments, Notices) তৈরি</li>
+            <li>বাকি: রেসপন্সিভ পলিশ, ফাইনাল রিভিউ, ছোট টাচ-আপ</li>
+          </ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-low">ঝুঁকি: কম</div>
+            <div class="stat-row"><span>বাকি সময়</span><span class="v">২–৩ দিন</span></div>
+            <div class="stat-row"><span>খরচ</span><span class="v">১৫,০০০–২৫,০০০ ৳</span></div>
+          </div>
+        </div>
+        <div class="sheet-foot">নোট: এই মডিউলের মূল কাঠামো ইতিমধ্যে বিনিয়োগ করা হয়ে গেছে (নিচে "ইতিমধ্যে সম্পন্ন" অংশে বিস্তারিত)।</div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 02</div><h3>ডেটাবেস ডিজাইন ও নরমালাইজেশন</h3></div>
+          <span class="badge b-new">বাকি</span>
+        </div>
+        <div class="sheet-body">
+          <ul>
+            <li>Students, Staff, Academics, Attendance, Exam, Routine, Users/Roles, Audit — প্রতিটির জন্য স্কিমা ডিজাইন</li>
+            <li>থার্ড নরমাল ফর্ম (3NF) পর্যন্ত নরমালাইজেশন — ডেটা রিপিটিশন ও অসঙ্গতি দূর করতে</li>
+            <li>রিলেশনশিপ ম্যাপিং, ইন্ডেক্সিং, মাইগ্রেশন স্ক্রিপ্ট</li>
+          </ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-high">ঝুঁকি: উচ্চ</div>
+            <div class="stat-row"><span>সময়</span><span class="v">৭–১০ দিন</span></div>
+            <div class="stat-row"><span>খরচ</span><span class="v">৩০,০০০–৪৫,০০০ ৳</span></div>
+          </div>
+        </div>
+        <div class="sheet-foot">কেন ঝুঁকি উচ্চ: ভুল ডেটাবেস ডিজাইন পরে পুরো সিস্টেম রিবিল্ড করতে বাধ্য করে — খরচ তখন ৩–৪ গুণ বেড়ে যায়।</div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 03</div><h3>ব্যাকএন্ড API ও অথেনটিকেশন</h3></div>
+          <span class="badge b-new">বাকি</span>
+        </div>
+        <div class="sheet-body">
+          <ul>
+            <li>Login/Session, Role-based Access Control (Admin/Teacher/Student/Guardian/Alumni)</li>
+            <li>প্রতিটি মডিউলের জন্য CRUD API: Academic, Attendance, Exam, Routine, Staff, Student, Report</li>
+            <li>ফাইল আপলোড, নোটিফিকেশন সিস্টেম, ইনপুট ভ্যালিডেশন</li>
+          </ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-high">ঝুঁকি: উচ্চ</div>
+            <div class="stat-row"><span>সময়</span><span class="v">২৫–৩৫ দিন</span></div>
+            <div class="stat-row"><span>খরচ</span><span class="v">৮০,০০০–১,২০,০০০ ৳</span></div>
+          </div>
+        </div>
+        <div class="sheet-foot">এটি প্রজেক্টের সবচেয়ে বড় ও সময়সাপেক্ষ অংশ — প্রতিটি প্যানেল এই লেয়ারের উপর নির্ভরশীল।</div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 04</div><h3>অ্যাডমিন প্যানেল — API সংযোগ</h3></div>
+          <span class="badge b-partial">UI সম্পন্ন · API বাকি</span>
+        </div>
+        <div class="sheet-body">
+          <ul>
+            <li>Academics, Attendance, Exam, Results, Routine, Roles, Staff, Students, Users, Audit Logs, Reports, Settings — ১২টি সাব-মডিউল</li>
+            <li>প্রতিটি সাব-মডিউলকে রিয়েল ডেটাবেস ও পারমিশন সিস্টেমের সাথে সংযুক্ত করা</li>
+          </ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-mid">ঝুঁকি: মাঝারি</div>
+            <div class="stat-row"><span>সময়</span><span class="v">১০–১৫ দিন</span></div>
+            <div class="stat-row"><span>খরচ</span><span class="v">২৫,০০০–৩৫,০০০ ৳</span></div>
+          </div>
+        </div>
+        <div class="sheet-foot">সাব-মডিউল বেশি হওয়ায় প্রতিটির আলাদা পারমিশন ও এজ-কেস টেস্ট করতে হবে।</div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 05</div><h3>স্টুডেন্ট প্যানেল — API সংযোগ</h3></div>
+          <span class="badge b-partial">UI সম্পন্ন · API বাকি</span>
+        </div>
+        <div class="sheet-body">
+          <ul><li>Attendance, Notices, Profile, Resources, Results, Routine — রিয়েল ডেটা সংযোগ</li></ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-low">ঝুঁকি: কম</div>
+            <div class="stat-row"><span>সময়</span><span class="v">৫–৭ দিন</span></div>
+            <div class="stat-row"><span>খরচ</span><span class="v">১৫,০০০–২০,০০০ ৳</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 06</div><h3>টিচার প্যানেল — API সংযোগ</h3></div>
+          <span class="badge b-partial">UI সম্পন্ন · API বাকি</span>
+        </div>
+        <div class="sheet-body">
+          <ul><li>Attendance নেওয়া, Courses, Marks Entry, Profile, Resources, Routine — রিয়েল ডেটা সংযোগ + নাম্বার এন্ট্রির ভ্যালিডেশন</li></ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-mid">ঝুঁকি: মাঝারি</div>
+            <div class="stat-row"><span>সময়</span><span class="v">৭–১০ দিন</span></div>
+            <div class="stat-row"><span>খরচ</span><span class="v">২০,০০০–২৫,০০০ ৳</span></div>
+          </div>
+        </div>
+        <div class="sheet-foot">মার্কস এন্ট্রিতে ভুল হলে রিপোর্ট কার্ডে সরাসরি প্রভাব পড়ে — এখানে কড়া ভ্যালিডেশন জরুরি।</div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 07</div><h3>গার্ডিয়ান প্যানেল</h3></div>
+          <span class="badge b-new">সম্পূর্ণ নতুন</span>
+        </div>
+        <div class="sheet-body">
+          <ul>
+            <li>সন্তানের Attendance, Result, Fee, Notice দেখার ড্যাশবোর্ড</li>
+            <li>একাধিক সন্তান থাকলে মাল্টি-চাইল্ড সাপোর্ট ও সম্পর্ক ম্যাপিং</li>
+          </ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-mid">ঝুঁকি: মাঝারি</div>
+            <div class="stat-row"><span>সময়</span><span class="v">১০–১৪ দিন</span></div>
+            <div class="stat-row"><span>খরচ</span><span class="v">৩৫,০০০–৫০,০০০ ৳</span></div>
+          </div>
+        </div>
+        <div class="sheet-foot">এই প্যানেলের UI বা লজিক আগে থেকে কিছুই নেই — শুরু থেকে বানাতে হবে।</div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 08</div><h3>অ্যালামনাই প্যানেল</h3></div>
+          <span class="badge b-new">সম্পূর্ণ নতুন</span>
+        </div>
+        <div class="sheet-body">
+          <ul>
+            <li>প্রাক্তন শিক্ষার্থীদের প্রোফাইল ও ডিরেক্টরি</li>
+            <li>ইভেন্ট/নেটওয়ার্কিং তথ্য, সার্টিফিকেট ভেরিফিকেশন</li>
+          </ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-low">ঝুঁকি: কম–মাঝারি</div>
+            <div class="stat-row"><span>সময়</span><span class="v">৭–১০ দিন</span></div>
+            <div class="stat-row"><span>খরচ</span><span class="v">২৫,০০০–৩৫,০০০ ৳</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 09</div><h3>সিকিউরিটি হার্ডেনিং</h3></div>
+          <span class="badge b-new">বাকি</span>
+        </div>
+        <div class="sheet-body">
+          <ul>
+            <li>পাসওয়ার্ড হ্যাশিং, সেশন/টোকেন সিকিউরিটি</li>
+            <li>রোল-বেসড পারমিশন এনফোর্সমেন্ট (বেস স্ট্রাকচার কোডে আগে থেকেই ডিজাইন করা আছে)</li>
+            <li>Rate limiting, SQL Injection/XSS প্রতিরোধ, HTTPS/SSL, অডিট লগ হার্ডেনিং</li>
+          </ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-high">ঝুঁকি: উচ্চ</div>
+            <div class="stat-row"><span>সময়</span><span class="v">৭–১০ দিন</span></div>
+            <div class="stat-row"><span>খরচ</span><span class="v">৩০,০০০–৪০,০০০ ৳</span></div>
+          </div>
+        </div>
+        <div class="sheet-foot">কেন ঝুঁকি উচ্চ: সিকিউরিটিতে ফাঁক থাকলে শিক্ষার্থী/অভিভাবকের ব্যক্তিগত ডেটা লিক হতে পারে — এটা ইনস্টিটিউটের জন্য সবচেয়ে বড় ক্ষতি।</div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 10</div><h3>Dockerization</h3></div>
+          <span class="badge b-done">✓ সম্পন্ন</span>
+        </div>
+        <div class="sheet-body">
+          <ul>
+            <li>মাল্টি-স্টেজ Dockerfile, .dockerignore ও docker-compose — কোড রিপোজিটরিতে এখন লাইভ</li>
+            <li>Production build (standalone Next.js output) + non-root ইউজার দিয়ে সিকিউর কন্টেইনার</li>
+          </ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-low">ঝুঁকি: কম</div>
+            <div class="stat-row"><span>সময়</span><span class="v">০ দিন (সম্পন্ন)</span></div>
+            <div class="stat-row"><span>মূল্য</span><span class="v">১০,০০০–১৫,০০০</span></div>
+          </div>
+        </div>
+        <div class="sheet-foot">এই কাজ বিনামূল্যে প্রমাণ হিসেবে আগেই সম্পন্ন করা হয়েছে — তাই এই অঙ্ক নিচের গ্র্যান্ড টোটালে যুক্ত করা হয়নি।</div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 11</div><h3>Dokploy Deployment (VPS)</h3></div>
+          <span class="badge b-new">বাকি</span>
+        </div>
+        <div class="sheet-body">
+          <ul>
+            <li>VPS-এ Dokploy ইনস্টল, ডোমেইন পয়েন্টিং, অটো SSL (Let's Encrypt) ও রিভার্স প্রক্সি কনফিগারেশন</li>
+            <li>ডিপ্লয়মেন্ট পাইপলাইন ও ডেটাবেস ব্যাকআপ স্ট্র্যাটেজি</li>
+          </ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-mid">ঝুঁকি: মাঝারি</div>
+            <div class="stat-row"><span>সময়</span><span class="v">২–৩ দিন</span></div>
+            <div class="stat-row"><span>খরচ</span><span class="v">১২,০০০–১৮,০০০ ৳</span></div>
+          </div>
+        </div>
+        <div class="sheet-foot">Dockerization আগেই হয়ে যাওয়ায় Dokploy-তে ডিপ্লয় করা সহজ ও কম সময়ের — ভিপিএস হোস্টিং-এর মাসিক খরচ এর বাইরে, ক্লায়েন্ট সরাসরি প্রোভাইডারকে পরিশোধ করবেন।</div>
+      </article>
+
+      <article class="sheet">
+        <div class="sheet-head">
+          <div><div class="sheet-id">SHEET 12</div><h3>টেস্টিং, QA ও বাগ ফিক্সিং</h3></div>
+          <span class="badge b-new">বাকি</span>
+        </div>
+        <div class="sheet-body">
+          <ul><li>প্রতিটি প্যানেল টেস্ট, ক্রস-ব্রাউজার ও মোবাইল রেসপন্সিভনেস, ইউজার অ্যাকসেপ্টেন্স টেস্টিং</li></ul>
+          <div class="sheet-stats">
+            <div class="risk-pill risk-mid">ঝুঁকি: মাঝারি</div>
+            <div class="stat-row"><span>সময়</span><span class="v">৭–১০ দিন</span></div>
+            <div class="stat-row"><span>খরচ</span><span class="v">২০,০০০–৩০,০০০ ৳</span></div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="note"><b>DRY (Don't Repeat Yourself) আর্কিটেকচার —</b> প্রতিটি মডিউলের কোড শুরু থেকেই Reusable Component ও Shared Service Layer দিয়ে লেখা হচ্ছে, যাতে কোড ডুপ্লিকেশন কম হয় এবং ভবিষ্যতে নতুন মডিউল (যেমন Guardian/Alumni) দ্রুত ও কম খরচে যুক্ত করা যায়। এটি আলাদা করে বিল করা হচ্ছে না — এটা সবগুলো শিটের মধ্যেই অন্তর্ভুক্ত একটি স্ট্যান্ডার্ড প্র্যাকটিস।</div>
+  </section>
+
+  <section>
+    <p class="eyebrow">নির্ভরতা</p>
+    <h2 class="title">কাজগুলো কেন একসাথে শেষ করা যায় না</h2>
+    <p class="lead">নিচের ধাপগুলো একটির পরে একটি নির্ভরশীল — ডেটাবেস ছাড়া ব্যাকএন্ড হয় না, ব্যাকএন্ড ছাড়া প্যানেল সংযোগ হয় না। তাই পুরো কাজ সমান্তরালে (parallel) করা সম্ভব নয়।</p>
+    <div class="tl">
+      <div class="tl-row"><span class="lab">ডেটাবেস ডিজাইন</span><div class="tl-track"><div class="tl-bar" style="width:18%"></div></div><span class="d">৭–১০ দিন</span></div>
+      <div class="tl-row"><span class="lab">ব্যাকএন্ড API</span><div class="tl-track"><div class="tl-bar" style="width:65%"></div></div><span class="d">২৫–৩৫ দিন</span></div>
+      <div class="tl-row"><span class="lab">প্যানেল সংযোগ</span><div class="tl-track"><div class="tl-bar" style="width:55%"></div></div><span class="d">৩২–৪৬ দিন</span></div>
+      <div class="tl-row"><span class="lab">সিকিউরিটি</span><div class="tl-track"><div class="tl-bar" style="width:18%"></div></div><span class="d">৭–১০ দিন</span></div>
+      <div class="tl-row"><span class="lab">Dokploy Deploy</span><div class="tl-track"><div class="tl-bar" style="width:9%"></div></div><span class="d">২–৩ দিন</span></div>
+      <div class="tl-row"><span class="lab">টেস্টিং</span><div class="tl-track"><div class="tl-bar" style="width:18%"></div></div><span class="d">৭–১০ দিন</span></div>
+    </div>
+    <p class="lead" style="margin-top:14px;">Dockerization আগেই সম্পন্ন হওয়ায় সময় বাঁচানো হয়েছে — তারপরও একজন ডেভেলপার একা কাজ করলে বাকি কাজে প্রায় <b class="num">৮৯–১২৭</b> কর্মদিবস লাগবে, মানে বাস্তবে প্রায় <b>৪–৬ মাস</b>। টিমে কাজ করলে সময় কিছুটা কমবে, কিন্তু তখন খরচ বাড়বে।</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">সারসংক্ষেপ</p>
+    <h2 class="title">মোট খরচের লেজার</h2>
+    <div class="overflow">
+    <table class="ledger">
+      <thead><tr><th>শিট</th><th>মডিউল</th><th class="num">সময়</th><th class="num">খরচ (৳)</th></tr></thead>
+      <tbody>
+        <tr><td class="num">01</td><td>UI/UX ফাইনাল পলিশ</td><td class="num">২–৩ দিন</td><td class="num">১৫,০০০–২৫,০০০</td></tr>
+        <tr><td class="num">02</td><td>ডেটাবেস ডিজাইন ও নরমালাইজেশন</td><td class="num">৭–১০ দিন</td><td class="num">৩০,০০০–৪৫,০০০</td></tr>
+        <tr><td class="num">03</td><td>ব্যাকএন্ড API ও অথেনটিকেশন</td><td class="num">২৫–৩৫ দিন</td><td class="num">৮০,০০০–১,২০,০০০</td></tr>
+        <tr><td class="num">04</td><td>অ্যাডমিন প্যানেল সংযোগ</td><td class="num">১০–১৫ দিন</td><td class="num">২৫,০০০–৩৫,০০০</td></tr>
+        <tr><td class="num">05</td><td>স্টুডেন্ট প্যানেল সংযোগ</td><td class="num">৫–৭ দিন</td><td class="num">১৫,০০০–২০,০০০</td></tr>
+        <tr><td class="num">06</td><td>টিচার প্যানেল সংযোগ</td><td class="num">৭–১০ দিন</td><td class="num">২০,০০০–২৫,০০০</td></tr>
+        <tr><td class="num">07</td><td>গার্ডিয়ান প্যানেল (নতুন)</td><td class="num">১০–১৪ দিন</td><td class="num">৩৫,০০০–৫০,০০০</td></tr>
+        <tr><td class="num">08</td><td>অ্যালামনাই প্যানেল (নতুন)</td><td class="num">৭–১০ দিন</td><td class="num">২৫,০০০–৩৫,০০০</td></tr>
+        <tr><td class="num">09</td><td>সিকিউরিটি হার্ডেনিং</td><td class="num">৭–১০ দিন</td><td class="num">৩০,০০০–৪০,০০০</td></tr>
+        <tr><td class="num">10</td><td>Dockerization <span style="color:var(--green); font-size:.75rem;">(✓ সম্পন্ন — টোটালে যুক্ত নয়)</span></td><td class="num">০ দিন</td><td class="num">—</td></tr>
+        <tr><td class="num">11</td><td>Dokploy Deployment (VPS)</td><td class="num">২–৩ দিন</td><td class="num">১২,০০০–১৮,০০০</td></tr>
+        <tr><td class="num">12</td><td>টেস্টিং, QA ও বাগ ফিক্সিং</td><td class="num">৭–১০ দিন</td><td class="num">২০,০০০–৩০,০০০</td></tr>
+        <tr class="total"><td colspan="2">সর্বমোট (বাকি কাজ)</td><td class="num">৮৯–১২৭ দিন</td><td class="num">৩,০৭,০০০–৪,৪৩,০০০</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="lead" style="margin-top:12px;">এই হিসাবের বাইরেও ইতিমধ্যে UI/UX কাঠামো, Admin/Student/Teacher প্যানেলের ডিজাইন, পাবলিক সাইট এবং Dockerization-এ আনুমানিক <b class="num">১,৬০,০০০–২,১৫,০০০ ৳</b> মূল্যের কাজ বিনিয়োগ করা হয়ে গেছে — যা এই প্রাক্কলনে পুনরায় যুক্ত করা হয়নি।</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">পেমেন্ট প্রস্তাব</p>
+    <h2 class="title">ধাপে ধাপে ডেলিভারি ও বিল</h2>
+    <p class="lead">কাজ ভেঙে ভেঙে দেখানোর অনুরোধ ন্যায্য — তাই বিলও তিন ধাপে ভাগ করা হলো, যাতে প্রতিটি ধাপে কী ডেলিভার হলো তা স্পষ্ট থাকে।</p>
+    <div class="milestones">
+      <div class="ms"><div class="pct">৩০%</div><h4>চুক্তি স্বাক্ষরের সময়</h4><p>ডেটাবেস ডিজাইন ও ব্যাকএন্ড শুরুর অগ্রিম</p></div>
+      <div class="ms"><div class="pct">৪০%</div><h4>মিডওয়ে ডেলিভারি</h4><p>ব্যাকএন্ড + সব প্যানেল সংযোগ সম্পন্ন হলে</p></div>
+      <div class="ms"><div class="pct">৩০%</div><h4>ফাইনাল ডেলিভারি</h4><p>সিকিউরিটি, Docker, VPS ডিপ্লয়মেন্ট ও টেস্টিং সম্পন্ন হলে</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">ঝুঁকি রেজিস্টার</p>
+    <h2 class="title">তাড়াহুড়ো করলে যা ঘটতে পারে</h2>
+    <div class="overflow">
+    <table class="risk">
+      <thead><tr><th>ঝুঁকি</th><th>প্রভাব</th></tr></thead>
+      <tbody>
+        <tr><td>ডেটাবেস নরমালাইজেশন স্কিপ</td><td>ডেটা অসঙ্গতি, পরে পুরো সিস্টেম রিবিল্ড — খরচ ৩–৪ গুণ বেড়ে যায়</td></tr>
+        <tr><td>সিকিউরিটি স্কিপ</td><td>ছাত্র/অভিভাবকের ব্যক্তিগত তথ্য লিক বা হ্যাক হওয়ার ঝুঁকি</td></tr>
+        <tr><td>টেস্টিং স্কিপ</td><td>লাইভে বাগ দেখা দেওয়া, শিক্ষক/অভিভাবকদের সামনে বিশ্বাসযোগ্যতা হারানো</td></tr>
+        <tr><td>তাড়াহুড়ো ডিপ্লয়মেন্ট</td><td>সার্ভার ডাউনটাইম, ব্যাকআপ ছাড়া ডেটা হারানোর সম্ভাবনা</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer class="sign">
+    <div>প্রস্তুতকারক<div class="sign-line">Abdul Wahed Nur</div></div>
+    <div>ক্লায়েন্ট অনুমোদন<div class="sign-line">তারিখ ও স্বাক্ষর</div></div>
+  </footer>
+
+</div>
