@@ -140,6 +140,21 @@ table.risk td:first-child{color:var(--ink); font-weight:600;}
 .edge-card h4{margin:0 0 6px; font-size:.95rem;}
 .edge-card p{margin:0; font-size:.83rem; color:var(--ink-soft);}
 
+/* mobile app nav */
+.appnav{display:none;}
+html{scroll-behavior:smooth;}
+section[id]{scroll-margin-top:14px;}
+@media (max-width:720px){
+  section[id]{scroll-margin-top:66px;}
+  body{padding-bottom:64px;}
+  .appnav{display:flex; position:fixed; left:0; right:0; bottom:0; z-index:50; justify-content:space-between;
+    background:var(--paper-raised); border-top:1px solid var(--line); box-shadow:0 -2px 10px color-mix(in srgb, var(--ink) 12%, transparent);
+    padding:6px 2px 8px;}
+  .appnav a{flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--ink-soft); text-decoration:none; font-size:.62rem; font-family:var(--font-head); letter-spacing:.02em; padding:4px 0;}
+  .appnav a:active, .appnav a:focus-visible{color:var(--amber);}
+  .appnav svg{width:20px; height:20px;}
+}
+
 footer.sign{margin-top:60px; border-top:2px solid var(--ink); padding-top:18px; display:flex; justify-content:space-between; gap:30px; font-size:.82rem; color:var(--ink-soft); flex-wrap:wrap;}
 .sign-line{width:220px; border-top:1px solid var(--ink-soft); padding-top:6px; margin-top:34px;}
 
@@ -155,6 +170,14 @@ footer.sign{margin-top:60px; border-top:2px solid var(--ink); padding-top:18px; 
 }
 </style>
 
+<nav class="appnav" aria-label="সেকশন মেনু">
+  <a href="#nav-top"><svg viewBox="0 0 24 24" fill="none"><path d="M3 11.5 12 4l9 7.5M5 10v9h14v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>সূচনা</span></a>
+  <a href="#nav-arch"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>আর্কিটেকচার</span></a>
+  <a href="#nav-modules"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="4" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/><rect x="4" y="13" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>মডিউল</span></a>
+  <a href="#nav-total"><svg viewBox="0 0 24 24" fill="none"><path d="M5 19V5m14 14V9m-7 10v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>টোটাল</span></a>
+  <a href="#nav-pay"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="2"/><path d="M12 7.5v9M9 9.5h4.2a1.8 1.8 0 1 1 0 3.6H9h4.5a1.8 1.8 0 1 1 0 3.6H9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>পেমেন্ট</span></a>
+</nav>
+
 <div class="wrap">
 
   <div class="titleblock">
@@ -166,7 +189,7 @@ footer.sign{margin-top:60px; border-top:2px solid var(--ink); padding-top:18px; 
     <div class="stamp">Draft · Rev A</div>
   </div>
 
-  <section>
+  <section id="nav-top">
     <p class="eyebrow">কেন এটি একটি ১–২ দিনের কাজ নয়</p>
     <h2 class="title">আপনি যা দেখছেন, সেটা পুরো প্রজেক্টের মাত্র একটি অংশ</h2>
     <p class="lead">একটি EMIS-কে বরফখণ্ডের (আইসবার্গ) মতো ভাবুন। জলের উপরে যা দেখা যায় — স্ক্রিনে ক্লিক করে দেখা পেজ, বাটন, ডিজাইন — সেটা সহজে তৈরি মনে হয়। কিন্তু জলের নিচে যা আছে — ডেটাবেস, সিকিউরিটি, সার্ভার — সেটাই আসল কাজ এবং সময়ের বড় অংশ এখানে যায়।</p>
@@ -190,7 +213,7 @@ footer.sign{margin-top:60px; border-top:2px solid var(--ink); padding-top:18px; 
     <div class="note"><b>বর্তমান অবস্থা —</b> Admin, Student ও Teacher প্যানেলের UI নমুনা (mock) ডেটায় তৈরি হয়ে গেছে। কিন্তু এর পেছনে কোনো রিয়েল ডেটাবেস, লগইন সিকিউরিটি বা সার্ভার এখনো যুক্ত হয়নি — সেটাই নিচের লেজারে ধাপে ধাপে দেখানো হয়েছে।</div>
   </section>
 
-  <section>
+  <section id="nav-arch">
     <p class="eyebrow">টেকনিক্যাল ব্লুপ্রিন্ট</p>
     <h2 class="title">সিস্টেম আর্কিটেকচার</h2>
     <p class="lead">EMIS যে স্তরগুলো (layers) নিয়ে তৈরি হবে তার ডায়াগ্রাম — প্রতিটি স্তর আলাদা, কিন্তু একটির উপর আরেকটি নির্ভরশীল।</p>
@@ -255,7 +278,7 @@ footer.sign{margin-top:60px; border-top:2px solid var(--ink); padding-top:18px; 
     </div>
   </section>
 
-  <section>
+  <section id="nav-modules">
     <p class="eyebrow">মডিউল-ভিত্তিক লেজার</p>
     <h2 class="title">কাজের শিট — মডিউল অনুযায়ী সময় ও খরচ</h2>
     <p class="lead">প্রতিটি শিট একটি নির্দিষ্ট মডিউলের কাজ, সময় এবং খরচ আলাদাভাবে দেখায় — ঠিক যেমন একটি কনস্ট্রাকশন এস্টিমেটে প্রতিটি কাজ লাইন বাই লাইন দেখানো হয়।</p>
@@ -502,7 +525,7 @@ footer.sign{margin-top:60px; border-top:2px solid var(--ink); padding-top:18px; 
     <p class="lead" style="margin-top:14px;">Dockerization আগেই সম্পন্ন হওয়ায় সময় বাঁচানো হয়েছে — তারপরও একজন ডেভেলপার একা কাজ করলে বাকি কাজে প্রায় <b class="num">৮৯–১২৭</b> কর্মদিবস লাগবে, মানে বাস্তবে প্রায় <b>৪–৬ মাস</b>। টিমে কাজ করলে সময় কিছুটা কমবে, কিন্তু তখন খরচ বাড়বে।</p>
   </section>
 
-  <section>
+  <section id="nav-total">
     <p class="eyebrow">সারসংক্ষেপ</p>
     <h2 class="title">মোট খরচের লেজার</h2>
     <div class="overflow">
@@ -528,7 +551,7 @@ footer.sign{margin-top:60px; border-top:2px solid var(--ink); padding-top:18px; 
     <p class="lead" style="margin-top:12px;">এই হিসাবের বাইরেও ইতিমধ্যে UI/UX কাঠামো, Admin/Student/Teacher প্যানেলের ডিজাইন, পাবলিক সাইট এবং Dockerization-এ আনুমানিক <b class="num">১,৬০,০০০–২,১৫,০০০ ৳</b> মূল্যের কাজ বিনিয়োগ করা হয়ে গেছে — যা এই প্রাক্কলনে পুনরায় যুক্ত করা হয়নি।</p>
   </section>
 
-  <section>
+  <section id="nav-pay">
     <p class="eyebrow">পেমেন্ট প্রস্তাব</p>
     <h2 class="title">ধাপে ধাপে ডেলিভারি ও বিল</h2>
     <p class="lead">কাজ ভেঙে ভেঙে দেখানোর অনুরোধ ন্যায্য — তাই বিলও তিন ধাপে ভাগ করা হলো, যাতে প্রতিটি ধাপে কী ডেলিভার হলো তা স্পষ্ট থাকে।</p>
