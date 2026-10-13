@@ -125,7 +125,7 @@ export default function DevCostPage() {
         />
 
         <div className="rounded-lg border border-border bg-amber-50 p-4 text-sm text-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
-          <strong>দ্রষ্টব্য:</strong> "দেশি ফ্রিল্যান্সার" কলামটি বাংলাদেশের ফ্রিল্যান্স বাজারের সাধারণ রেট অনুযায়ী আনুমানিক হিসাব। "এজেন্সি/সফটওয়্যার ফার্ম" কলামটি EMIS প্রজেক্টের অফিসিয়াল ক্লায়েন্ট প্রেজেন্টেশনে (EMIS_Client_Presentation.pptx) দেওয়া বাস্তব কোটেশনের সাথে মিলিয়ে রাখা হয়েছে — সর্বমোট <strong>৪,১৪,০০০ – ৫,৮৭,০০০ টাকা</strong>। প্রকৃত খরচ কাজের সুযোগ পরিবর্তনের সাথে ওঠানামা করতে পারে।
+          <strong>দ্রষ্টব্য:</strong> &quot;দেশি ফ্রিল্যান্সার&quot; কলামটি বাংলাদেশের ফ্রিল্যান্স বাজারের সাধারণ রেট অনুযায়ী আনুমানিক হিসাব। &quot;এজেন্সি/সফটওয়্যার ফার্ম&quot; কলামটি EMIS প্রজেক্টের অফিসিয়াল ক্লায়েন্ট প্রেজেন্টেশনে (EMIS_Client_Presentation.pptx) দেওয়া বাস্তব কোটেশনের সাথে মিলিয়ে রাখা হয়েছে — সর্বমোট <strong>৪,১৪,০০০ – ৫,৮৭,০০০ টাকা</strong>। প্রকৃত খরচ কাজের সুযোগ পরিবর্তনের সাথে ওঠানামা করতে পারে।
         </div>
 
         <div className="overflow-x-auto rounded-lg border border-border">
